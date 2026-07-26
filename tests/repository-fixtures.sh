@@ -25,4 +25,4 @@ git -C "$ROOT" cat-file -e "$payload^{commit}"
 git -C "$ROOT" merge-base --is-ancestor "$payload" HEAD
 
 grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' "$ROOT/install.sh"
-grep -q 'candidate##.*/} == "$name"-\[0-9\]\*.pkg.tar.\*' "$ROOT/install.sh"
+grep -Fq "if [[ \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
