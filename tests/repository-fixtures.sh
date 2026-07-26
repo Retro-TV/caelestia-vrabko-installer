@@ -28,3 +28,8 @@ grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' 
 grep -Fq "if [[ \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell-aw true' "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell true' "$ROOT/install.sh"
+grep -Fq "[[ \$BASHPID == \"\$INSTALLER_BASHPID\" ]] || return \"\$status\"" "$ROOT/install.sh"
+if grep -A6 '^    while IFS= read -r candidate' "$ROOT/install.sh" | grep -q 'break'; then
+    echo 'Package archive selection must consume the complete package list' >&2
+    exit 1
+fi

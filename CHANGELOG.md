@@ -5,6 +5,15 @@ Versioning while the project is pre-1.0.
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-07-26
+
+### Fixed
+
+- Consumed every `makepkg --packagelist` result so automatic debug archives do
+  not trigger a broken pipe while selecting the primary package.
+- Restricted temporary dots cleanup to the top-level installer process so an
+  inherited subshell error trap cannot remove verified inputs prematurely.
+
 ## [0.2.5] - 2026-07-26
 
 ### Fixed
@@ -58,7 +67,8 @@ Versioning while the project is pre-1.0.
 
 - All bundled and generated starter wallpapers and their profile option.
 
-[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.6
 [0.2.5]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.5
 [0.2.4]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.4
 [0.2.3]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.3

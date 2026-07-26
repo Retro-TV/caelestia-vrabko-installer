@@ -15,6 +15,7 @@ DRY_RUN=false
 ASSUME_YES=false
 PROFILE_PATH=
 ALLOW_EXPERIMENTAL=false
+INSTALLER_BASHPID=$BASHPID
 
 PROFILE_VERSION=2
 PRESET=generic
@@ -52,6 +53,7 @@ die() {
 
 on_error() {
     local status=$?
+    [[ $BASHPID == "$INSTALLER_BASHPID" ]] || return "$status"
     [[ -z "$PREPARED_DOTS_DIR" ]] || rm -rf -- "$PREPARED_DOTS_DIR"
     printf '\nInstallation stopped during: %s\n' "$CURRENT_STAGE" >&2
     printf 'Review %s and backups under %s before rebooting.\n' "$LOG_FILE" "$BACKUP_DIR" >&2
@@ -478,9 +480,8 @@ build_source_archive() {
     (cd "$package_dir" && makepkg "${makepkg_args[@]}")
     BUILT_PACKAGE_FILE=
     while IFS= read -r candidate; do
-        if [[ ${candidate##*/} == "$name"-[0-9]*.pkg.tar.* ]]; then
+        if [[ -z "$BUILT_PACKAGE_FILE" && ${candidate##*/} == "$name"-[0-9]*.pkg.tar.* ]]; then
             BUILT_PACKAGE_FILE=$candidate
-            break
         fi
     done < <(cd "$package_dir" && makepkg --packagelist)
     [[ -f "$BUILT_PACKAGE_FILE" ]] || die "Pinned build did not produce an archive: $name"
