@@ -10,6 +10,9 @@ application bundles, and an isolated OpenCode service.
 The installer does not partition disks, install Arch, modify the bootloader,
 enable desktop autologin, or install personal wallpapers.
 
+The interactive wizard uses labeled choices and lists the applications included
+in each optional bundle before anything is installed.
+
 ## Quick Install
 
 Log in as your normal user with sudo access. Review the immutable payload before

@@ -5,6 +5,15 @@ Versioning while the project is pre-1.0.
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-07-26
+
+### Changed
+
+- Replaced cryptic free-form locale and keyboard prompts with labeled English,
+  Slovenian, and custom choices.
+- Expanded browser, gaming, communication, development, Caelestia package, and
+  OpenCode menus to explain exactly what each selection installs or enables.
+
 ## [0.2.2] - 2026-07-26
 
 ### Added
@@ -32,6 +41,7 @@ Versioning while the project is pre-1.0.
 
 - All bundled and generated starter wallpapers and their profile option.
 
-[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.3
 [0.2.2]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.2
 [0.2.1]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.1

@@ -86,14 +86,25 @@ yes_no() {
     done
 }
 
-choose() {
+choose_labeled() {
     local prompt=$1
     shift
     local option
+    local -a values=() labels=()
+    while (($# >= 2)); do
+        values+=("$1")
+        labels+=("$2")
+        shift 2
+    done
+    (($# == 0 && ${#values[@]} > 0)) || die 'Invalid labeled choice definition'
     printf '\n%s\n' "$prompt" >&2
-    select option in "$@"; do
-        [[ -n "$option" ]] && { printf '%s\n' "$option"; return; }
-        printf 'Choose a listed number.\n' >&2
+    local PS3='Enter a number: '
+    select option in "${labels[@]}"; do
+        if [[ -n "$option" ]]; then
+            printf '%s\n' "${values[REPLY - 1]}"
+            return
+        fi
+        printf 'Enter the number beside one of the listed choices.\n' >&2
     done
 }
 
@@ -141,7 +152,10 @@ validate_profile() {
 }
 
 interactive_profile() {
-    PRESET=$(choose 'Choose a starting preset:' generic vrabko)
+    local locale_choice keyboard_choice
+    PRESET=$(choose_labeled 'Choose a starting style (every choice is reviewed next):' \
+        generic 'Generic - English/US defaults and smaller app bundles' \
+        vrabko 'Vrabko - Slovenian defaults, custom keybinds, and full bundles')
     if [[ "$PRESET" == vrabko ]]; then
         LOCALE=sl_SI.UTF-8
         KEYBOARD_LAYOUT=si
@@ -151,19 +165,56 @@ interactive_profile() {
         DEVELOPMENT=full
     fi
 
-    read -r -p "Locale [$LOCALE]: " answer
-    LOCALE=${answer:-$LOCALE}
-    read -r -p "Hyprland keyboard layout [$KEYBOARD_LAYOUT]: " answer
-    KEYBOARD_LAYOUT=${answer:-$KEYBOARD_LAYOUT}
-    KEYBIND_PRESET=$(choose 'Choose keybind preset:' default vrabko)
-    BROWSER=$(choose 'Choose browser:' firefox chromium none)
-    GAMING=$(choose 'Choose gaming bundle:' none basic full)
-    COMMUNICATION=$(choose 'Choose communication bundle:' none basic full)
-    DEVELOPMENT=$(choose 'Choose development bundle:' none basic full)
-    INSTALL_AW=$(yes_no 'Install pinned animated-wallpaper support?' yes)
-    INSTALL_OPENCODE=$(yes_no 'Install authenticated OpenCode localhost service?' yes)
+    locale_choice=$(choose_labeled 'Choose the system locale:' \
+        en_US.UTF-8 'English (United States) - en_US.UTF-8' \
+        sl_SI.UTF-8 'Slovenian (Slovenia) - sl_SI.UTF-8' \
+        custom 'Custom - enter a locale such as de_DE.UTF-8')
+    if [[ "$locale_choice" == custom ]]; then
+        read -r -p 'Enter locale in ll_CC.UTF-8 format: ' LOCALE
+    else
+        LOCALE=$locale_choice
+    fi
+
+    keyboard_choice=$(choose_labeled 'Choose the keyboard layout used by Hyprland:' \
+        us 'US English - us' \
+        si 'Slovenian - si' \
+        custom 'Custom - enter an XKB layout code')
+    if [[ "$keyboard_choice" == custom ]]; then
+        read -r -p 'Enter XKB keyboard layout code: ' KEYBOARD_LAYOUT
+    else
+        KEYBOARD_LAYOUT=$keyboard_choice
+    fi
+
+    KEYBIND_PRESET=$(choose_labeled 'Choose the Hyprland keybind layout:' \
+        default 'Default - preserve standard Caelestia keybind behavior' \
+        vrabko 'Vrabko - apply the bundled Vrabko workspace and shortcut overrides')
+    BROWSER=$(choose_labeled 'Choose a browser:' \
+        firefox 'Firefox' \
+        chromium 'Chromium' \
+        none 'None - do not install a browser')
+    GAMING=$(choose_labeled 'Choose gaming applications:' \
+        none 'None' \
+        basic 'Basic - Lutris, GameMode, MangoHud, and Steam when available' \
+        full 'Full - Basic plus Wine Staging, Winetricks, and Heroic when available')
+    COMMUNICATION=$(choose_labeled 'Choose communication applications:' \
+        none 'None' \
+        basic 'Basic - Telegram Desktop' \
+        full 'Full - Telegram, Signal, and Vesktop (Discord fallback)')
+    DEVELOPMENT=$(choose_labeled 'Choose development applications:' \
+        none 'None' \
+        basic 'Basic - Code and GitHub CLI' \
+        full 'Full - Basic plus Docker, Docker Compose, Lazygit, and ShellCheck')
+    INSTALL_AW=$(choose_labeled 'Choose Caelestia wallpaper support:' \
+        yes 'Animated - install the pinned AW replacement packages' \
+        no 'Official - install the pinned upstream Caelestia packages')
+    INSTALL_OPENCODE=$(choose_labeled 'Install the isolated authenticated OpenCode service?' \
+        yes 'Yes - localhost-only service with generated credentials' \
+        no 'No - do not install or run the OpenCode service')
     if [[ "$INSTALL_OPENCODE" == yes ]]; then
-        REMOTE_ACCESS=$(choose 'Choose OpenCode access:' local tailscale cloudflare)
+        REMOTE_ACCESS=$(choose_labeled 'Choose OpenCode network access:' \
+            local 'Local only - listen on 127.0.0.1:4096' \
+            tailscale 'Tailscale - tailnet-only HTTPS on port 8443' \
+            cloudflare 'Cloudflare - install cloudflared; tunnel and Access remain manual')
     else
         REMOTE_ACCESS=local
     fi
