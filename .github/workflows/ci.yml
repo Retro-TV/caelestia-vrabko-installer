@@ -52,6 +52,10 @@ jobs:
             runuser -u tester -- makepkg --dir "packages/$package" -si --needed --noconfirm --cleanbuild
           done
           runuser -u tester -- makepkg --dir packages/caelestia-cli-aw --syncdeps --noconfirm --cleanbuild
+          pacman -S --needed --noconfirm ddcutil brightnessctl networkmanager lm_sensors fish aubio \
+            libpipewire ttf-material-symbols-variable power-profiles-daemon ttf-cascadia-code-nerd \
+            swappy libqalculate qt6-base qt6-declarative qt6-imageformats qt6-multimedia \
+            qt6-multimedia-ffmpeg cmake ninja qt6-shadertools
           runuser -u tester -- makepkg --dir packages/caelestia-shell-aw --nodeps --noconfirm --cleanbuild
           pacman -U --noconfirm packages/caelestia-cli-aw/*.pkg.tar.* packages/caelestia-shell-aw/*.pkg.tar.*
           runuser -u tester -- makepkg --dir packages/caelestia-cli --noconfirm --cleanbuild
