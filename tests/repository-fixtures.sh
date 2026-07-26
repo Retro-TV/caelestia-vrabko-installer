@@ -23,3 +23,6 @@ payload=$(awk -F= '/^payload=[0-9a-f]{40}$/ { print $2; exit }' "$ROOT/README.md
 
 git -C "$ROOT" cat-file -e "$payload^{commit}"
 git -C "$ROOT" merge-base --is-ancestor "$payload" HEAD
+
+grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' "$ROOT/install.sh"
+grep -q 'candidate##.*/} == "$name"-\[0-9\]\*.pkg.tar.\*' "$ROOT/install.sh"

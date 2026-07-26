@@ -306,7 +306,15 @@ resolve_packages() {
         gnome-keyring polkit-gnome networkmanager
         bluez bluez-utils pipewire pipewire-pulse pipewire-audio pipewire-alsa pipewire-jack
         wireplumber pavucontrol wl-clipboard cliphist noto-fonts noto-fonts-cjk noto-fonts-emoji
-        trash-cli bat ripgrep ydotool hyprpicker xdg-user-dirs)
+        trash-cli bat ripgrep ydotool hyprpicker xdg-user-dirs
+        python python-pillow pybind11 python-build python-setuptools python-installer python-wheel
+        python-hatch python-hatch-vcs fftw ncurses alsa-lib iniparser libglvnd sdl2 portaudio
+        sndio libpulse libpipewire cmake meson autoconf-archive qt6-declarative qt6-base jemalloc
+        qt6-svg libxcb wayland libdrm cpptrace vulkan-headers spirv-tools qt6-shadertools
+        wayland-protocols cli11 ninja libnotify swappy grim dart-sass slurp gpu-screen-recorder
+        dconf fuzzel ffmpeg ddcutil brightnessctl lm_sensors aubio ttf-material-symbols-variable
+        power-profiles-daemon ttf-cascadia-code-nerd libqalculate qt6-imageformats qt6-multimedia
+        qt6-multimedia-ffmpeg)
     SOURCE_PACKAGES=(python-materialyoucolor libcava ttf-rubik-vf quickshell-git)
     SKIPPED_PACKAGES=()
 
@@ -459,10 +467,16 @@ build_source_package() {
 }
 
 build_source_archive() {
-    local name=$1 package_dir="$ROOT/packages/$1"
+    local name=$1 package_dir="$ROOT/packages/$1" candidate
     [[ -f "$package_dir/PKGBUILD" ]] || die "Missing pinned package recipe: $name"
     (cd "$package_dir" && makepkg --cleanbuild --force --syncdeps --noconfirm)
-    BUILT_PACKAGE_FILE=$(cd "$package_dir" && makepkg --packagelist)
+    BUILT_PACKAGE_FILE=
+    while IFS= read -r candidate; do
+        if [[ ${candidate##*/} == "$name"-[0-9]*.pkg.tar.* ]]; then
+            BUILT_PACKAGE_FILE=$candidate
+            break
+        fi
+    done < <(cd "$package_dir" && makepkg --packagelist)
     [[ -f "$BUILT_PACKAGE_FILE" ]] || die "Pinned build did not produce an archive: $name"
 }
 

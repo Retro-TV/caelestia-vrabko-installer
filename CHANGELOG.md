@@ -5,6 +5,15 @@ Versioning while the project is pre-1.0.
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-07-26
+
+### Fixed
+
+- Installed pinned-package runtime and build dependencies in the initial package
+  transaction so unattended profiles do not encounter late sudo prompts.
+- Selected the requested package archive when current Arch `makepkg` also emits
+  an automatic debug archive.
+
 ## [0.2.3] - 2026-07-26
 
 ### Changed
@@ -41,7 +50,8 @@ Versioning while the project is pre-1.0.
 
 - All bundled and generated starter wallpapers and their profile option.
 
-[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.4
 [0.2.3]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.3
 [0.2.2]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.2
 [0.2.1]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.1
