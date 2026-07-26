@@ -19,9 +19,9 @@ jobs:
     timeout-minutes: 45
     container: archlinux@sha256:412efebb0eeef0ef322ff24ad73f82b1ba2d3b12377db4c5fbe3074c7e7e8678
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
       - name: Install validation tools
         run: pacman -Syu --noconfirm git jq shellcheck sudo
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Prepare unprivileged test user
         run: |
           useradd --create-home tester
