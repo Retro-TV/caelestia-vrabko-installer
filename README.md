@@ -19,7 +19,7 @@ Log in as your normal user with sudo access. Review the immutable payload before
 running it, then execute:
 
 ```bash
-payload=392055a6222c7435acb36a658e3aba63a1966b95
+payload=2a6003962a1a1a97d7436d6c57f3214216fbdded
 install_dir="$HOME/.local/src/caelestia-vrabko-installer-${payload:0:7}"
 
 sudo pacman -Syu --needed git
