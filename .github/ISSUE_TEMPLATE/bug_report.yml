@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a reproducible installer defect with sanitized diagnostics
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include passwords, tokens, domains, private Tailscale details, or provider state. Report vulnerabilities through the private security link instead.
+  - type: input
+    id: version
+    attributes:
+      label: Installer version or commit
+      placeholder: v0.2.0 or a 40-character commit
+    validations:
+      required: true
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: Distribution
+      options:
+        - Arch Linux
+        - CachyOS
+        - EndeavourOS
+        - Manjaro (experimental)
+        - Other pacman system (experimental)
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Architecture, kernel, and GPU
+      placeholder: x86_64, 7.x-cachyos, AMD Radeon RX ...
+    validations:
+      required: true
+  - type: input
+    id: invocation
+    attributes:
+      label: Exact invocation and profile
+      placeholder: ./install.sh --profile profiles/minimal.profile
+    validations:
+      required: true
+  - type: input
+    id: stage
+    attributes:
+      label: Failing stage
+      placeholder: package installation
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and sanitized logs
+      description: Remove all credentials and private infrastructure details.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, usernames, hostnames, domains, and private network details.
+          required: true
+        - label: This is not a vulnerability report.
+          required: true

@@ -1,0 +1,15 @@
+# Build output
+packages/*/src/
+packages/*/pkg/
+packages/**/*.pkg.tar.*
+packages/**/*.log
+packages/**/*.tar.gz
+packages/**/*.ttf
+packages/ttf-rubik-vf/AUTHORS.txt
+packages/ttf-rubik-vf/CONTRIBUTORS.txt
+packages/ttf-rubik-vf/OFL.txt
+
+# Local test state
+.cache/
+.state/
+*.local.profile

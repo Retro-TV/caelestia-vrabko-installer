@@ -1,0 +1,76 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 4 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  arch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container: archlinux@sha256:412efebb0eeef0ef322ff24ad73f82b1ba2d3b12377db4c5fbe3074c7e7e8678
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+      - name: Install validation tools
+        run: pacman -Syu --noconfirm git jq shellcheck sudo
+      - name: Prepare unprivileged test user
+        run: |
+          useradd --create-home tester
+          chown -R tester:tester "$GITHUB_WORKSPACE"
+      - name: Static validation
+        run: |
+          bash -n install.sh validate.sh tests/*.sh packages/*/PKGBUILD
+          shellcheck install.sh validate.sh tests/*.sh
+          jq empty templates/opencode/opencode.json
+          runuser -u tester -- tests/security-fixtures.sh
+          runuser -u tester -- tests/repository-fixtures.sh
+      - name: Profile dry runs
+        run: |
+          runuser -u tester -- env HOME=/home/tester USER=tester ./install.sh --profile profiles/minimal.profile --dry-run
+          runuser -u tester -- env HOME=/home/tester USER=tester ./install.sh --profile profiles/vrabko.profile --dry-run
+      - name: Verify AW sources and patches
+        run: |
+          for package_dir in packages/*; do
+            runuser -u tester -- makepkg --dir "$package_dir" --verifysource
+            runuser -u tester -- makepkg --dir "$package_dir" --nobuild --nodeps --cleanbuild --force
+          done
+      - name: Build and switch pinned package sets
+        run: |
+          printf 'tester ALL=(ALL) NOPASSWD: ALL\n' >/etc/sudoers.d/tester
+          for package in python-materialyoucolor libcava ttf-rubik-vf quickshell-git; do
+            runuser -u tester -- makepkg --dir "packages/$package" -si --needed --noconfirm --cleanbuild
+          done
+          runuser -u tester -- makepkg --dir packages/caelestia-cli-aw -si --needed --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-shell-aw -si --needed --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-cli --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-shell --noconfirm --cleanbuild
+          pacman -Rdd --noconfirm caelestia-cli-aw caelestia-shell-aw
+          pacman -U --noconfirm packages/caelestia-cli/*.pkg.tar.* packages/caelestia-shell/*.pkg.tar.*
+          pacman -Rdd --noconfirm caelestia-cli caelestia-shell
+          pacman -U --noconfirm packages/caelestia-cli-aw/*.pkg.tar.* packages/caelestia-shell-aw/*.pkg.tar.*
+          pacman -Q python-materialyoucolor libcava ttf-rubik-vf quickshell-git caelestia-cli-aw caelestia-shell-aw
+      - name: Verify managed update refusal
+        run: |
+          install -d -o tester -g tester /home/tester/.local/state/caelestia
+          install -o tester -g tester -m 0600 /dev/null /home/tester/.local/state/caelestia/externally-managed
+          output=$(runuser -u tester -- env HOME=/home/tester caelestia update --noconfirm 2>&1) && {
+            echo 'Externally managed update unexpectedly succeeded' >&2
+            exit 1
+          }
+          grep -Fq 'This Caelestia installation is externally managed' <<<"$output"
+          install -d -o tester -g tester /home/tester/custom-state/caelestia
+          install -o tester -g tester -m 0600 /dev/null /home/tester/custom-state/caelestia/externally-managed
+          output=$(runuser -u tester -- env HOME=/home/tester XDG_STATE_HOME=/home/tester/custom-state caelestia update --noconfirm 2>&1) && {
+            echo 'Custom-state managed update unexpectedly succeeded' >&2
+            exit 1
+          }
+          grep -Fq 'This Caelestia installation is externally managed' <<<"$output"

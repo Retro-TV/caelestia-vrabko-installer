@@ -1,0 +1,23 @@
+# Maintainer: Retro-TV
+pkgname=python-materialyoucolor
+pkgver=3.0.2
+pkgrel=1
+pkgdesc='Material You color algorithms for Python'
+arch=('x86_64')
+url='https://github.com/T-Dynamos/materialyoucolor-python'
+license=('MIT')
+depends=('glibc' 'gcc-libs' 'python' 'python-pillow' 'pybind11')
+makedepends=('python-build' 'python-setuptools' 'python-installer' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
+sha256sums=('aa013f0faea26b87b65f35d7b67f7850c7ed4b926cf1628617d088fe9ddaa9ec')
+
+build() {
+    cd "materialyoucolor-python-$pkgver"
+    python -m build --wheel --no-isolation
+}
+
+package() {
+    cd "materialyoucolor-python-$pkgver"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

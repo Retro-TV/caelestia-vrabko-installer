@@ -1,0 +1,83 @@
+diff --git a/src/caelestia/subcommands/install.py b/src/caelestia/subcommands/install.py
+index 84607e2..4e939ca 100644
+--- a/src/caelestia/subcommands/install.py
++++ b/src/caelestia/subcommands/install.py
+@@ -1,3 +1,4 @@
++import os
+ import shutil
+ import textwrap
+ from argparse import Namespace
+@@ -15,5 +16,5 @@ from caelestia.utils.dots.manifest import ComponentError, Manifest, ManifestErro
+ from caelestia.utils.dots.misc import build_local_packages, run_hooks
+-from caelestia.utils.dots.packages import DEFAULT_AUR_HELPER, PackageError, PackageInstaller
++from caelestia.utils.dots.packages import DEFAULT_AUR_HELPER, NoopInstaller, PackageError, PackageInstaller
+ from caelestia.utils.dots.source import DotsSource, SourceError
+ from caelestia.utils.dots.state import DotsState
+ from caelestia.utils.io import confirm, disable_input, fatal, info, log, pause, prompt_selection, warn
+@@ -177,6 +178,13 @@ class Command:
+     ) -> tuple[PackageInstaller, dict[str, str], dict[str, list[str]]]:
+-        installer = PackageInstaller.get(self.args.aur_helper, self.args.noconfirm)
++        if os.getenv("CAELESTIA_SKIP_PACKAGE_INSTALL") == "1":
++            info("Package installation is managed by the verified workstation installer.")
++            installer = NoopInstaller()
++        else:
++            installer = PackageInstaller.get(self.args.aur_helper, self.args.noconfirm)
++
+ 
+         packages = {}
+         desired = manifest.enabled_packages()
++        if os.getenv("CAELESTIA_SKIP_PACKAGE_INSTALL") == "1":
++            desired = []
+         if desired:
+diff --git a/src/caelestia/utils/dots/source.py b/src/caelestia/utils/dots/source.py
+index bdb5b12..a8bf25e 100644
+--- a/src/caelestia/utils/dots/source.py
++++ b/src/caelestia/utils/dots/source.py
+@@ -1,25 +1,27 @@
++import os
+ import shutil
+ import subprocess
+ from pathlib import Path
+ 
+ from caelestia.utils.dots.manifest import Manifest
+ from caelestia.utils.paths import dots_dir, get_config
+ 
+ 
+ class SourceError(Exception):
+     """Raised when a git operation against the dots clone fails."""
+ 
+ 
+ class DotsSource:
+     _fetched_source: bool = False
+ 
+     def __init__(self) -> None:
+         cfg = get_config().get("dots", {})
+         self.url = cfg.get("url", "https://github.com/caelestia-dots/caelestia.git")
+         self.branch = cfg.get("branch", "main")
++        self.rev = os.getenv("CAELESTIA_DOTS_REV")
+         # Cache git blobs by (ref, relpath); objects are immutable for a given rev
+         self._blob_cache: dict[tuple[str, str], bytes] = {}
+ 
+     @property
+     def remote_ref(self) -> str:
+-        return f"origin/{self.branch}"
++        return self.rev or f"origin/{self.branch}"
+diff --git a/src/caelestia/subcommands/update.py b/src/caelestia/subcommands/update.py
+index 9b8112a..71d63d2 100644
+--- a/src/caelestia/subcommands/update.py
++++ b/src/caelestia/subcommands/update.py
+@@ -1,3 +1,4 @@
++import os
+ import sys
+ from argparse import Namespace
+ from pathlib import Path
+@@ -18,5 +19,9 @@ class Command:
+         self.args = args
+ 
+     def run(self) -> None:
++        state_home = Path(os.getenv("XDG_STATE_HOME", Path.home() / ".local/state"))
++        if (state_home / "caelestia/externally-managed").is_file():
++            fatal("This Caelestia installation is externally managed; update the workstation installer instead.")
++
+         if self.args.noconfirm:
+             disable_input()

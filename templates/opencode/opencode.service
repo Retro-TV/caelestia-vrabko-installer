@@ -1,0 +1,24 @@
+[Unit]
+Description=Authenticated localhost OpenCode server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/opencode/server.env
+Environment=HOME=%h/.local/share/caelestia-vrabko-installer/opencode-home
+Environment=XDG_CONFIG_HOME=%h/.local/share/caelestia-vrabko-installer/opencode-home/.config
+Environment=XDG_DATA_HOME=%h/.local/share/caelestia-vrabko-installer/opencode-home/.local/share
+Environment=XDG_STATE_HOME=%h/.local/share/caelestia-vrabko-installer/opencode-home/.local/state
+Environment=XDG_CACHE_HOME=%h/.local/share/caelestia-vrabko-installer/opencode-home/.cache
+Environment=OPENCODE_CONFIG=%h/.local/share/caelestia-vrabko-installer/opencode-home/.config/opencode/opencode.json
+Environment=OPENCODE_CONFIG_DIR=%h/.local/share/caelestia-vrabko-installer/opencode-home/.config/opencode
+Environment=OPENCODE_DISABLE_PROJECT_CONFIG=1
+WorkingDirectory=%h/OpenCodeWorkspace
+ExecStart=/usr/bin/opencode serve --pure --hostname 127.0.0.1 --port 4096
+UMask=0077
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

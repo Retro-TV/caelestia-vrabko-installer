@@ -1,0 +1,54 @@
+# Maintainer: Retro-TV
+pkgname=caelestia-shell-aw
+pkgver=2.2.0.aw1.1.3
+pkgrel=3
+pkgdesc='Caelestia desktop shell with pinned animated wallpaper support'
+arch=('x86_64' 'aarch64')
+url='https://github.com/AdiAmbassador/caelestia-shell-aw'
+license=('GPL-3.0-only')
+depends=('caelestia-cli>=1.1.2' 'quickshell-git' 'ddcutil' 'brightnessctl' 'libcava' 'networkmanager'
+         'lm_sensors' 'fish' 'aubio' 'libpipewire' 'glibc' 'gcc-libs' 'ttf-material-symbols-variable'
+         'power-profiles-daemon' 'ttf-rubik-vf' 'ttf-cascadia-code-nerd' 'swappy' 'libqalculate'
+         'bash' 'qt6-base' 'qt6-declarative' 'qt6-imageformats' 'qt6-multimedia'
+         'qt6-multimedia-ffmpeg')
+makedepends=('cmake' 'ninja' 'qt6-shadertools')
+provides=('caelestia-shell=2.2.0')
+conflicts=('caelestia-shell' 'caelestia-shell-git')
+options=('!debug')
+_commit=20f95a6a331d8b479630a493ae07954e887a821a
+_m3_commit=bdc327b29f95394a732baf3c9b19658ba23755b6
+_archive="caelestia-shell-aw-${_commit}"
+_m3_archive="m3shapes-${_m3_commit}"
+source=("${_archive}.tar.gz::${url}/archive/${_commit}.tar.gz"
+        "${_m3_archive}.tar.gz::https://github.com/soramanew/m3shapes/archive/${_m3_commit}.tar.gz"
+        '0001-shell-player-length.patch::https://github.com/caelestia-dots/shell/commit/dbb6d6c029021145422255dee6cd7ba607be3a20.patch'
+        '0002-remove-stale-wallpaper-refresh.patch'
+        '0003-remove-unauthenticated-unlock-ipc.patch')
+sha256sums=('d156218c9a0abc2020ed9c566310c908cabe35afbb6a6732ae0856bff77ecd9f'
+            '5ddc5641a51154d6f0aebc072b4c1e5cd161d0137ae7aafc9d9cb84c59a17d06'
+            '46a4f66619ac5eab8f7802acf6a744cf09d429437a585add80a0ddbcea33a1e9'
+            'a1ca524678830d44f7b24ef895faf61e31496795ea20169a71e0eb28228f6b22'
+            '12f664bb462fa29972a70c7db7e49e0f1d9249f23a6c3a9dd55a92eb54f15589')
+
+prepare() {
+    cd "$srcdir/$_archive"
+    patch -Np1 <"$srcdir/0001-shell-player-length.patch"
+    patch -Np1 <"$srcdir/0002-remove-stale-wallpaper-refresh.patch"
+    patch -Np1 <"$srcdir/0003-remove-unauthenticated-unlock-ipc.patch"
+}
+
+build() {
+    cmake -S "$srcdir/$_archive" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DCMAKE_INSTALL_PREFIX=/ \
+        -DVERSION=2.2.0 \
+        -DGIT_REVISION="$_commit" \
+        -DDISTRIBUTOR='caelestia-vrabko-installer' \
+        -DFETCHCONTENT_SOURCE_DIR_M3SHAPES_EXTERNAL="$srcdir/$_m3_archive"
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 "$srcdir/$_archive/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

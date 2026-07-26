@@ -1,0 +1,34 @@
+# Maintainer: Retro-TV
+pkgname=quickshell-git
+pkgver=0.3.0.r3.g7d1c9a9
+pkgrel=1
+pkgdesc='Pinned Quickshell toolkit for QtQuick desktop shells'
+arch=('x86_64' 'aarch64')
+url='https://git.outfoxxed.me/quickshell/quickshell'
+license=('LGPL-3.0-only')
+depends=('qt6-declarative' 'qt6-base' 'jemalloc' 'qt6-svg' 'libpipewire' 'libxcb' 'wayland'
+         'libdrm' 'mesa' 'cpptrace' 'vulkan-headers' 'polkit')
+makedepends=('spirv-tools' 'qt6-shadertools' 'wayland-protocols' 'cli11' 'ninja' 'cmake')
+provides=('quickshell')
+conflicts=('quickshell')
+options=('!strip')
+_commit=7d1c9a9c6721606b129829134d6f614f015621e2
+source=("quickshell-${_commit}.tar.gz::$url/archive/${_commit}.tar.gz"
+        'quickshell-check.hook')
+sha256sums=('c2f6a28a1ac47e5a5f94f69fb0e91bb6de649af04be094303b4a0739b23e18d7'
+            '4004a3d5f1578978c7a0aabb37bf819886efbf51f506c5918c900c9dc5d7b6e9')
+
+build() {
+    cmake -S "$srcdir/quickshell" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DDISTRIBUTOR='caelestia-vrabko-installer' \
+        -DINSTALL_QML_PREFIX=lib/qt6/qml
+    cmake --build build
+}
+
+package() {
+    install -Dm644 quickshell-check.hook -t "$pkgdir/usr/share/libalpm/hooks"
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 "$srcdir/quickshell/LICENSE" -t "$pkgdir/usr/share/licenses/quickshell"
+}

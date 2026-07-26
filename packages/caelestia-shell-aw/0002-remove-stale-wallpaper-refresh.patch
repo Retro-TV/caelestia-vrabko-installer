@@ -1,0 +1,17 @@
+diff --git a/modules/launcher/Content.qml b/modules/launcher/Content.qml
+index 925db68..54681bd 100644
+--- a/modules/launcher/Content.qml
++++ b/modules/launcher/Content.qml
+@@ -60,12 +60,6 @@ Item {
+ 
+         placeholderText: qsTr("Type \"%1\" for commands").arg(GlobalConfig.launcher.actionPrefix)
+ 
+-        onTextChanged: {
+-            if (text === `${GlobalConfig.launcher.actionPrefix}wallpaper `) {
+-                Wallpapers.updateWallpapers();
+-            }
+-        }
+-
+         onAccepted: {
+             const currentItem = list.currentList?.currentItem;
+             if (!currentItem)

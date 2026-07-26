@@ -1,0 +1,9 @@
+* @Retro-TV
+
+/install.sh @Retro-TV
+/validate.sh @Retro-TV
+/versions.lock @Retro-TV
+/packages/ @Retro-TV
+/templates/opencode/ @Retro-TV
+/.github/ @Retro-TV
+/SECURITY.md @Retro-TV

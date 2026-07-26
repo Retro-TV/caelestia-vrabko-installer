@@ -1,0 +1,30 @@
+diff --git a/modules/lock/Lock.qml b/modules/lock/Lock.qml
+index 4c75d46..f0be7ec 100644
+--- a/modules/lock/Lock.qml
++++ b/modules/lock/Lock.qml
+@@ -48,14 +48,6 @@ Scope {
+         onPressed: lock.locked = true
+     }
+ 
+-    // qmllint disable unresolved-type
+-    CustomShortcut {
+-        // qmllint enable unresolved-type
+-        name: "unlock"
+-        description: "Unlock the current session"
+-        onPressed: lock.unlock()
+-    }
+-
+     IpcHandler {
+         function lock(): void {
+             lock.locked = true;
+@@ -61,10 +53,6 @@ Scope {
+             lock.locked = true;
+         }
+ 
+-        function unlock(): void {
+-            lock.unlock();
+-        }
+-
+         function isLocked(): bool {
+             return lock.locked;
+         }
