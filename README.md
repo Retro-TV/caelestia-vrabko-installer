@@ -39,6 +39,7 @@ mutable branch or tag.
 - Pinned Quickshell, Material You color, libcava, and Rubik dependencies.
 - Hyprland, UWSM, greetd, portals, PipeWire, utilities, and selected app bundles.
 - AMD or Intel Mesa support; NVIDIA only when a compatible driver already exists.
+- Known virtual GPUs only when the system is positively identified as a VM.
 - An optional OpenCode service bound to localhost with generated authentication.
 - Optional tailnet-only OpenCode access through Tailscale Serve on HTTPS 8443.
 
@@ -58,6 +59,9 @@ You supply and manage your own wallpapers after installation.
 | EndeavourOS | Supported |
 | Manjaro | Experimental; requires `--allow-experimental` |
 | Other pacman systems | Experimental; requires `--allow-experimental` |
+
+VirtIO, QEMU, QXL, VMware, VirtualBox, and Hyper-V graphics are supported only
+inside a detected virtual machine and use Mesa software rendering.
 
 ## Usage
 

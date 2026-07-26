@@ -201,6 +201,7 @@ detect_graphics() {
     GPU_INTEL=false
     GPU_NVIDIA=false
     GPU_UNKNOWN=false
+    GPU_VIRTUAL=false
     GPU_COUNT=0
     local vendor vendor_file
     shopt -s nullglob
@@ -211,6 +212,13 @@ detect_graphics() {
             0x1002) GPU_AMD=true ;;
             0x8086) GPU_INTEL=true ;;
             0x10de) GPU_NVIDIA=true ;;
+            0x1af4|0x1234|0x1b36|0x15ad|0x80ee|0x1414)
+                if systemd-detect-virt --vm --quiet; then
+                    GPU_VIRTUAL=true
+                else
+                    GPU_UNKNOWN=true
+                fi
+                ;;
             *) GPU_UNKNOWN=true ;;
         esac
     done
@@ -258,6 +266,7 @@ resolve_packages() {
         fi
     fi
     [[ "$GPU_INTEL" == true ]] && REPO_PACKAGES+=(mesa vulkan-intel intel-media-driver)
+    [[ "$GPU_VIRTUAL" == true ]] && REPO_PACKAGES+=(mesa vulkan-swrast)
     if [[ "$GPU_NVIDIA" == true ]]; then
         if [[ -z $(pacman -Qq | grep -E '^(nvidia(-open)?(-dkms)?|nvidia-[0-9]+xx(-open)?-dkms|linux[^[:space:]]*-nvidia(-open)?)$' || true) ]]; then
             die 'NVIDIA GPU detected without a recognized driver. Install the distro-appropriate NVIDIA driver first.'
@@ -332,6 +341,7 @@ Animated wallpaper: $INSTALL_AW
 OpenCode:           $INSTALL_OPENCODE ($REMOTE_ACCESS)
 Desktop autologin:  disabled
 Graphics detected:  AMD=$GPU_AMD Intel=$GPU_INTEL NVIDIA=$GPU_NVIDIA Unknown=$GPU_UNKNOWN
+Virtual graphics:   $GPU_VIRTUAL
 
 Repository packages:
   ${REPO_PACKAGES[*]}

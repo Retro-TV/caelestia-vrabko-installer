@@ -5,6 +5,14 @@ Versioning while the project is pre-1.0.
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-07-26
+
+### Added
+
+- Fail-closed VirtIO, QEMU, QXL, VMware, VirtualBox, and Hyper-V graphics
+  detection when the system is positively identified as a virtual machine.
+- Mesa software Vulkan packages for supported virtual GPU installations.
+
 ## [0.2.1] - 2026-07-26
 
 ### Added
@@ -24,5 +32,6 @@ Versioning while the project is pre-1.0.
 
 - All bundled and generated starter wallpapers and their profile option.
 
-[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.2
 [0.2.1]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.1
