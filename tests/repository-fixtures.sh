@@ -25,7 +25,7 @@ git -C "$ROOT" cat-file -e "$payload^{commit}"
 git -C "$ROOT" merge-base --is-ancestor "$payload" HEAD
 
 grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' "$ROOT/install.sh"
-grep -Fq "if [[ \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
+grep -Fq "if [[ -z \"\$BUILT_PACKAGE_FILE\" && \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell-aw true' "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell true' "$ROOT/install.sh"
 grep -Fq "[[ \$BASHPID == \"\$INSTALLER_BASHPID\" ]] || return \"\$status\"" "$ROOT/install.sh"
