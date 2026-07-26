@@ -5,6 +5,14 @@ Versioning while the project is pre-1.0.
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-07-26
+
+### Fixed
+
+- Built replacement shell archives without requiring their paired CLI package
+  to be installed before the final dependency-enforcing package transaction.
+- Updated CI to exercise the installer's build-both-before-switch ordering.
+
 ## [0.2.4] - 2026-07-26
 
 ### Fixed
@@ -50,7 +58,8 @@ Versioning while the project is pre-1.0.
 
 - All bundled and generated starter wallpapers and their profile option.
 
-[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/Retro-TV/caelestia-vrabko-installer/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.5
 [0.2.4]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.4
 [0.2.3]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.3
 [0.2.2]: https://github.com/Retro-TV/caelestia-vrabko-installer/releases/tag/v0.2.2

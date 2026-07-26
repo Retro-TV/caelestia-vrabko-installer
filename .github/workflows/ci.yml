@@ -51,10 +51,11 @@ jobs:
           for package in python-materialyoucolor libcava ttf-rubik-vf quickshell-git; do
             runuser -u tester -- makepkg --dir "packages/$package" -si --needed --noconfirm --cleanbuild
           done
-          runuser -u tester -- makepkg --dir packages/caelestia-cli-aw -si --needed --noconfirm --cleanbuild
-          runuser -u tester -- makepkg --dir packages/caelestia-shell-aw -si --needed --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-cli-aw --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-shell-aw --nodeps --noconfirm --cleanbuild
+          pacman -U --noconfirm packages/caelestia-cli-aw/*.pkg.tar.* packages/caelestia-shell-aw/*.pkg.tar.*
           runuser -u tester -- makepkg --dir packages/caelestia-cli --noconfirm --cleanbuild
-          runuser -u tester -- makepkg --dir packages/caelestia-shell --noconfirm --cleanbuild
+          runuser -u tester -- makepkg --dir packages/caelestia-shell --nodeps --noconfirm --cleanbuild
           pacman -Rdd --noconfirm caelestia-cli-aw caelestia-shell-aw
           pacman -U --noconfirm packages/caelestia-cli/*.pkg.tar.* packages/caelestia-shell/*.pkg.tar.*
           pacman -Rdd --noconfirm caelestia-cli caelestia-shell

@@ -26,3 +26,5 @@ git -C "$ROOT" merge-base --is-ancestor "$payload" HEAD
 
 grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' "$ROOT/install.sh"
 grep -Fq "if [[ \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
+grep -Fq 'build_source_archive caelestia-shell-aw true' "$ROOT/install.sh"
+grep -Fq 'build_source_archive caelestia-shell true' "$ROOT/install.sh"
