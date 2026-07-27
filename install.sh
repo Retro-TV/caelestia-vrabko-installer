@@ -535,15 +535,15 @@ install_caelestia() {
         cli_package=$BUILT_PACKAGE_FILE
         build_source_archive caelestia-shell-aw true
         shell_package=$BUILT_PACKAGE_FILE
-        pacman -Q caelestia-cli >/dev/null 2>&1 && opposite_packages+=(caelestia-cli)
-        pacman -Q caelestia-shell >/dev/null 2>&1 && opposite_packages+=(caelestia-shell)
+        pacman -Qq | grep -Fx caelestia-cli >/dev/null && opposite_packages+=(caelestia-cli)
+        pacman -Qq | grep -Fx caelestia-shell >/dev/null && opposite_packages+=(caelestia-shell)
     else
         build_source_archive caelestia-cli
         cli_package=$BUILT_PACKAGE_FILE
         build_source_archive caelestia-shell true
         shell_package=$BUILT_PACKAGE_FILE
-        pacman -Q caelestia-cli-aw >/dev/null 2>&1 && opposite_packages+=(caelestia-cli-aw)
-        pacman -Q caelestia-shell-aw >/dev/null 2>&1 && opposite_packages+=(caelestia-shell-aw)
+        pacman -Qq | grep -Fx caelestia-cli-aw >/dev/null && opposite_packages+=(caelestia-cli-aw)
+        pacman -Qq | grep -Fx caelestia-shell-aw >/dev/null && opposite_packages+=(caelestia-shell-aw)
     fi
     if ((${#opposite_packages[@]} > 0)); then
         sudo pacman -Rdd --noconfirm "${opposite_packages[@]}"

@@ -31,6 +31,7 @@ grep -Fq 'pacman -Syu --needed --noconfirm --ask 4 "${REPO_PACKAGES[@]}"' "$ROOT
 grep -Fq "if [[ -z \"\$BUILT_PACKAGE_FILE\" && \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell-aw true' "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell true' "$ROOT/install.sh"
+[[ $(grep -cF 'pacman -Qq | grep -Fx caelestia-' "$ROOT/install.sh") == 4 ]]
 grep -Fq "[[ \$BASHPID == \"\$INSTALLER_BASHPID\" ]] || return \"\$status\"" "$ROOT/install.sh"
 if grep -A6 '^    while IFS= read -r candidate' "$ROOT/install.sh" | grep -q 'break'; then
     echo 'Package archive selection must consume the complete package list' >&2
