@@ -27,6 +27,7 @@ git -C "$ROOT" merge-base --is-ancestor "$payload" HEAD
 grep -q 'pybind11 python-build python-setuptools python-installer python-wheel' "$ROOT/install.sh"
 # shellcheck disable=SC2016 # The installer expression must remain literal.
 grep -Fq 'pacman -Syu --needed --noconfirm --ask 4 "${REPO_PACKAGES[@]}"' "$ROOT/install.sh"
+[[ $(grep -cF 'makepkg --force --verifysource' "$ROOT/install.sh") == 5 ]]
 grep -Fq "if [[ -z \"\$BUILT_PACKAGE_FILE\" && \${candidate##*/} == \"\$name\"-[0-9]*.pkg.tar.* ]]; then" "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell-aw true' "$ROOT/install.sh"
 grep -Fq 'build_source_archive caelestia-shell true' "$ROOT/install.sh"

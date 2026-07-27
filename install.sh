@@ -491,14 +491,14 @@ prepare_verified_sources() {
     stage 'Verifying pinned source inputs before package mutation'
     local name dots_commit dots_sha256 dots_archive archive_tree
     for name in "${SOURCE_PACKAGES[@]}"; do
-        (cd "$ROOT/packages/$name" && makepkg --verifysource)
+        (cd "$ROOT/packages/$name" && makepkg --force --verifysource)
     done
     if [[ "$INSTALL_AW" == yes ]]; then
-        (cd "$ROOT/packages/caelestia-cli-aw" && makepkg --verifysource)
-        (cd "$ROOT/packages/caelestia-shell-aw" && makepkg --verifysource)
+        (cd "$ROOT/packages/caelestia-cli-aw" && makepkg --force --verifysource)
+        (cd "$ROOT/packages/caelestia-shell-aw" && makepkg --force --verifysource)
     else
-        (cd "$ROOT/packages/caelestia-cli" && makepkg --verifysource)
-        (cd "$ROOT/packages/caelestia-shell" && makepkg --verifysource)
+        (cd "$ROOT/packages/caelestia-cli" && makepkg --force --verifysource)
+        (cd "$ROOT/packages/caelestia-shell" && makepkg --force --verifysource)
     fi
     dots_commit=$(awk -F= '$1 == "dots_commit" { print $2 }' "$ROOT/versions.lock")
     dots_sha256=$(awk -F= '$1 == "dots_sha256" { print $2 }' "$ROOT/versions.lock")
