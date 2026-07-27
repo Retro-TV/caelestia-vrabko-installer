@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 set -Eeuo pipefail
 
-payload=c07bef787cc8757c6c8c433a0d65cacb3a7227c4
+payload=b17d776eb391acf1b417b3a0026ee5820cee9928
 install_dir="$HOME/.local/src/caelestia-vrabko-installer-${payload:0:7}"
 repo=https://github.com/Retro-TV/caelestia-vrabko-installer.git
 
