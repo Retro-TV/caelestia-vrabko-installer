@@ -459,7 +459,7 @@ enable_multilib() {
 
 install_packages() {
     stage 'Upgrading system and installing base packages'
-    sudo pacman -Syu --needed --noconfirm "${REPO_PACKAGES[@]}"
+    sudo pacman -Syu --needed --noconfirm --ask 4 "${REPO_PACKAGES[@]}"
 }
 
 build_source_package() {
