@@ -15,26 +15,15 @@ in each optional bundle before anything is installed.
 
 ## Quick Install
 
-Log in as your normal user with sudo access. Review the immutable payload before
-running it, then execute:
+Log in as your normal user with sudo access and run:
 
 ```bash
-payload=862677c2511d13cfa144ceae063569b4f0ac0d9c
-install_dir="$HOME/.local/src/caelestia-vrabko-installer-${payload:0:7}"
-
-sudo pacman -Syu --needed git
-mkdir -p "$install_dir"
-git -C "$install_dir" init
-git -C "$install_dir" remote add origin \
-  https://github.com/Retro-TV/caelestia-vrabko-installer.git
-git -C "$install_dir" fetch --depth 1 origin "$payload"
-git -C "$install_dir" checkout --detach FETCH_HEAD
-test "$(git -C "$install_dir" rev-parse HEAD)" = "$payload"
-"$install_dir/install.sh"
+curl -fsSL https://raw.githubusercontent.com/Retro-TV/caelestia-vrabko-installer/main/quick-install.sh | bash
 ```
 
-The bootstrap fetches and verifies an immutable commit. It never executes a
-mutable branch or tag.
+The command installs Git if needed, fetches and verifies the pinned installer
+commit, and opens the complete interactive wizard. You choose every option and
+review the installation plan before any desktop changes are made.
 
 ## What It Installs
 

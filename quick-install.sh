@@ -8,13 +8,8 @@ repo=https://github.com/Retro-TV/caelestia-vrabko-installer.git
 
 [[ $EUID -ne 0 ]] || { echo 'Run this as your normal user, not root.' >&2; exit 1; }
 
-echo 'Installing the minimal English/US Caelestia profile.'
-echo 'This replaces any enabled display manager with greetd.'
-
-sudo -v
-if systemctl is-enabled display-manager.service >/dev/null 2>&1; then
-    sudo systemctl disable display-manager.service
-fi
+echo 'Starting the interactive Caelestia installer.'
+echo 'You will choose every installation option before changes are made.'
 
 sudo pacman -Syu --needed --noconfirm git
 mkdir -p "$install_dir"
@@ -31,6 +26,4 @@ git -C "$install_dir" checkout --detach FETCH_HEAD
     exit 1
 }
 
-exec "$install_dir/install.sh" \
-    --profile "$install_dir/profiles/minimal.profile" \
-    --yes
+exec "$install_dir/install.sh" </dev/tty
