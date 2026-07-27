@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-only
+set -Eeuo pipefail
+
+payload=862677c2511d13cfa144ceae063569b4f0ac0d9c
+install_dir="$HOME/.local/src/caelestia-vrabko-installer-${payload:0:7}"
+repo=https://github.com/Retro-TV/caelestia-vrabko-installer.git
+
+[[ $EUID -ne 0 ]] || { echo 'Run this as your normal user, not root.' >&2; exit 1; }
+
+echo 'Installing the minimal English/US Caelestia profile.'
+echo 'This replaces any enabled display manager with greetd.'
+
+sudo -v
+if systemctl is-enabled display-manager.service >/dev/null 2>&1; then
+    sudo systemctl disable display-manager.service
+fi
+
+sudo pacman -Syu --needed --noconfirm git
+mkdir -p "$install_dir"
+if [[ ! -d "$install_dir/.git" ]]; then
+    git -C "$install_dir" init
+    git -C "$install_dir" remote add origin "$repo"
+else
+    git -C "$install_dir" remote set-url origin "$repo"
+fi
+git -C "$install_dir" fetch --depth 1 origin "$payload"
+git -C "$install_dir" checkout --detach FETCH_HEAD
+[[ $(git -C "$install_dir" rev-parse HEAD) == "$payload" ]] || {
+    echo 'Fetched installer does not match the pinned payload.' >&2
+    exit 1
+}
+
+exec "$install_dir/install.sh" \
+    --profile "$install_dir/profiles/minimal.profile" \
+    --yes
