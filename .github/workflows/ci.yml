@@ -30,8 +30,8 @@ jobs:
           chown -R tester:tester "$GITHUB_WORKSPACE"
       - name: Static validation
         run: |
-          bash -n install.sh validate.sh tests/*.sh packages/*/PKGBUILD
-          shellcheck install.sh validate.sh tests/*.sh
+          bash -n install.sh quick-install.sh validate.sh tests/*.sh packages/*/PKGBUILD
+          shellcheck install.sh quick-install.sh validate.sh tests/*.sh
           jq empty templates/opencode/opencode.json
           runuser -u tester -- tests/security-fixtures.sh
           runuser -u tester -- tests/repository-fixtures.sh

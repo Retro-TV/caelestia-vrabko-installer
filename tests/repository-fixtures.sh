@@ -17,7 +17,7 @@ if grep -R -E 'INSTALL_WALLPAPERS|vrabko-grid|vrabko-mandelbrot|generated starte
     exit 1
 fi
 
-payload=$(awk -F= '/^payload=[0-9a-f]{40}$/ { print $2; exit }' "$ROOT/README.md")
+payload=$(awk -F= '/^payload=[0-9a-f]{40}$/ { print $2; exit }' "$ROOT/quick-install.sh")
 [[ "$payload" =~ ^[0-9a-f]{40}$ ]]
 [[ "$payload" != 0000000000000000000000000000000000000000 ]]
 
